@@ -11,20 +11,22 @@ def get_dice_roll():
     return jsonify({'dice_roll': random_roll})
 
 #route to post number of dice rolled
-# "custom_roll" : int between 1 and 6
+# "num_rolls" : int between 1 and 6
 @app.route('/api/dice', methods=['POST'])
-def post_dice_roll():
+def post_dice_rolls():
     data = request.get_json()
 
-    if 'custom_roll' not in data:
-        return jsonify({'message': 'Cannot find "custom_roll" request body parameter'}), 400
+    if 'num_rolls' not in data:
+        return jsonify({'message': 'Cannot find "num_rolls" parameter'}), 400
 
-    custom_roll = data['custom_roll']
-    
-    if not isinstance(custom_roll, int) or custom_roll < 1 or custom_roll > 6:
-        return jsonify({'message': 'Invalid custom_roll value. It should be a number  equal or between 1 and 6.'}), 400
+    num_rolls = data['num_rolls']
 
-    return jsonify({'custom_roll': custom_roll})
+    if not isinstance(num_rolls, int) or num_rolls <= 0:
+        return jsonify({'message': 'Please input a positive number.'}), 400
+
+    dice_rolls = [random.choice([1, 2, 3, 4, 5, 6]) for _ in range(num_rolls)]
+
+    return jsonify({'dice_rolls': dice_rolls})
 
 if __name__ == '__main__':
     app.run(debug=True)
